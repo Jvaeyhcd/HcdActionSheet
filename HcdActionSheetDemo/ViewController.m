@@ -33,7 +33,9 @@
 }
 
 - (void)open {
-    HcdActionSheet *sheet = [[HcdActionSheet alloc]initWithCancelStr:@"Cancle" otherButtonTitles:@[@"Log Out"] attachTitle:@"Are you sure Log Out?"];
+    HcdActionSheet *sheet = [[HcdActionSheet alloc] initWithCancelStr:@"Cancle"
+                                                    otherButtonTitles:@[@"Log Out"]
+                                                          attachTitle:@"Are you sure Log Out?"];
     [[UIApplication sharedApplication].keyWindow addSubview:sheet];
     [sheet showHcdActionSheet];
 }
