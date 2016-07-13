@@ -41,6 +41,9 @@
     return self;
 }
 
+/**
+ *  加载UI
+ */
 - (void)loadUI
 {
     /*self*/
@@ -125,7 +128,12 @@
     }
 }
 
--(void)selectedButtons:(UIButton *)btns{
+/**
+ *  按钮的点击事件
+ *
+ *  @param btns 被电击的按钮
+ */
+- (void)selectedButtons:(UIButton *)btns{
     
     typeof(self) __weak weak = self;
     [self dismissBlock:^(BOOL complete) {
@@ -137,13 +145,15 @@
     
 }
 
--(void) changeTitleColor:(UIColor *)color andIndex:(NSInteger )index{
+//修改某一项的titleColor
+- (void)changeTitleColor:(UIColor *)color andIndex:(NSInteger )index{
     
     UIButton *btn = (UIButton *)[_buttomView viewWithTag:index + 100];
     [btn setTitleColor:color forState:UIControlStateNormal];
     
 }
 
+//隐藏
 -(void)dismiss:(UITapGestureRecognizer *)tap{
     
     if( CGRectContainsPoint(self.frame, [tap locationInView:_buttomView])) {
@@ -156,6 +166,7 @@
     }
 }
 
+//隐藏ActionSheet的Block
 -(void)dismissBlock:(completeAnimationBlock)block{
     
     
@@ -176,6 +187,9 @@
     
 }
 
+/**
+ *  显示ActionSheet
+ */
 - (void)showHcdActionSheet
 {
     typeof(self) __weak weak = self;

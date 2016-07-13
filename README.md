@@ -50,4 +50,4 @@ sheet.selectButtonAtIndex = ^(NSInteger index) {
 [[UIApplication sharedApplication].keyWindow addSubview:sheet];
 [sheet showHcdActionSheet];
 ```
-You can write this in witch ViewController you want to show ActionSheet.
+You can write this in which ViewController you want to show HcdActionSheet.
