@@ -1,6 +1,7 @@
 HcdActionSheet
 ------
-
+![License](https://img.shields.io/cocoapods/l/TWPhotoPicker.svg)
+![Platform](https://img.shields.io/cocoapods/p/TWPhotoPicker.svg)
 A custom ActionSheet.
 
 ![图片](https://raw.githubusercontent.com/Jvaeyhcd/HcdActionSheet/master/screen.gif)
