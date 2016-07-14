@@ -4,7 +4,7 @@ HcdActionSheet
 ![Platform](https://img.shields.io/cocoapods/p/TWPhotoPicker.svg)
 
 
-A custom ActionSheet.
+A custom ActionSheet like wechat.
 
 ![图片](https://raw.githubusercontent.com/Jvaeyhcd/HcdActionSheet/master/screen.gif)
 
