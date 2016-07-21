@@ -1,8 +1,8 @@
 HcdActionSheet
 ------
 [![Version](https://img.shields.io/cocoapods/v/HcdActionSheet.svg?style=flat)](http://cocoapods.org/pods/HcdActionSheet)
-![License](https://img.shields.io/cocoapods/l/HcdActionSheet.svg)(http://cocoapods.org/pods/HcdActionSheet)
-![Platform](https://img.shields.io/cocoapods/p/HcdActionSheet.svg)(http://cocoapods.org/pods/HcdActionSheet)
+[![License](https://img.shields.io/cocoapods/l/TWPhotoPicker.svg)](http://cocoapods.org/pods/HcdActionSheet)
+[![Platform](https://img.shields.io/cocoapods/p/TWPhotoPicker.svg)](http://cocoapods.org/pods/HcdActionSheet)
 
 
 A custom ActionSheet like wechat.
