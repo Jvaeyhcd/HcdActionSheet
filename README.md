@@ -1,9 +1,11 @@
 HcdActionSheet
 ------
 [![Version](https://img.shields.io/cocoapods/v/HcdActionSheet.svg?style=flat)](http://cocoapods.org/pods/HcdActionSheet)
-[![License](https://img.shields.io/cocoapods/l/TWPhotoPicker.svg)](http://cocoapods.org/pods/HcdActionSheet)
-[![Platform](https://img.shields.io/cocoapods/p/TWPhotoPicker.svg)](http://cocoapods.org/pods/HcdActionSheet)
-
+[![License](https://img.shields.io/github/license/Jvaeyhcd/HcdActionSheet.svg)](http://cocoapods.org/pods/HcdActionSheet)
+[![Platform](https://img.shields.io/cocoapods/p/HcdActionSheet.svg)](http://cocoapods.org/pods/HcdActionSheet)
+[![Tag](https://img.shields.io/github/tag/Jvaeyhcd/HcdActionSheet.svg
+)](http://cocoapods.org/pods/HcdActionSheet)
+[![Author](https://img.shields.io/badge/author-Jvaeyhcd-f07c3d.svg)](http://www.jvaeyhcd.cc)
 
 A custom ActionSheet like wechat.
 
