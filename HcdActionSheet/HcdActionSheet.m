@@ -14,6 +14,7 @@
 #define kHcdScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kHcdScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kHcdCellSpacing 7.0f
+#define IS_IPHONEX ([UIScreen mainScreen].bounds.size.height == 812.0f)
 
 @class HcdActionSheet;
 
@@ -56,7 +57,7 @@
     
     buttomView.backgroundColor = [UIColor colorWithRed:223.0f/255.0f green:226.0f/255.f blue:236.0f/255.0f alpha:1];
     
-    _actionSheetHeight = _titles.count * (kHcdSheetCellHeight+0.5f);
+    _actionSheetHeight = IS_IPHONEX ? _titles.count * (kHcdSheetCellHeight+0.5f) + 34.0 : _titles.count * (kHcdSheetCellHeight+0.5f);
     if (_attachTitle) {
         _actionSheetHeight += kSubTitleHeight;
     }
@@ -70,15 +71,16 @@
     /*end*/
     
     /*CanceBtn*/
+    CGFloat cancleBtnY = IS_IPHONEX ? CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight - 34.0 : CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight;
     UIButton *cancleBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     [cancleBtn setBackgroundColor:[UIColor whiteColor]];
-    [cancleBtn setFrame:CGRectMake(0, CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight, kHcdScreenWidth, kHcdSheetCellHeight)];
+    [cancleBtn setFrame:CGRectMake(0, cancleBtnY, kHcdScreenWidth, kHcdSheetCellHeight)];
     [cancleBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [cancleBtn setTitle:_cancelStr forState:UIControlStateNormal];
     [cancleBtn addTarget:self action:@selector(selectedButtons:) forControlEvents:UIControlEventTouchUpInside];
     [cancleBtn setTag:100];
     if (_cancelStr) {
-        [cancleBtn setFrame:CGRectMake(0, CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight, kHcdScreenWidth, kHcdSheetCellHeight)];
+        [cancleBtn setFrame:CGRectMake(0, cancleBtnY, kHcdScreenWidth, kHcdSheetCellHeight)];
         [_buttomView addSubview:cancleBtn];
     }
     
