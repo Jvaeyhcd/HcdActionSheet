@@ -55,7 +55,7 @@
     /*buttomView*/
     UIView *buttomView = [[UIView alloc] init];
     
-    buttomView.backgroundColor = [UIColor colorWithRed:223.0f/255.0f green:226.0f/255.f blue:236.0f/255.0f alpha:1];
+    buttomView.backgroundColor = [UIColor colorWithRed:0.922 green:0.918 blue:0.937 alpha:1.00];
     
     _actionSheetHeight = IS_IPHONEX ? _titles.count * (kHcdSheetCellHeight+0.5f) + 34.0 : _titles.count * (kHcdSheetCellHeight+0.5f);
     if (_attachTitle) {
@@ -84,6 +84,13 @@
         [_buttomView addSubview:cancleBtn];
     }
     
+    if (IS_IPHONEX) {
+        UIView *bView = [[UIView alloc] init];
+        bView.frame = CGRectMake(0, cancleBtnY + kHcdSheetCellHeight, kHcdScreenWidth, 34.0);
+        bView.backgroundColor = [UIColor whiteColor];
+        [_buttomView addSubview:bView];
+    }
+    
     /*end*/
     
     /*Items*/
@@ -109,6 +116,7 @@
         [btn setTag:(index + 100)+1];
         [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [btn setTitle:title forState:UIControlStateNormal];
+        btn.titleLabel.font = [UIFont systemFontOfSize:16];
         [btn addTarget:self action:@selector(selectedButtons:) forControlEvents:UIControlEventTouchUpInside];
         [_buttomView addSubview:btn];
     }
@@ -178,7 +186,7 @@
     [UIView animateWithDuration:0.4f delay:0 usingSpringWithDamping:0.8f initialSpringVelocity:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
         
         [weak setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.0f]];
-        [_buttomView setFrame:CGRectMake(0, kHcdScreenHeight, kHcdScreenWidth, height)];
+        [weak.buttomView setFrame:CGRectMake(0, kHcdScreenHeight, kHcdScreenWidth, height)];
         
     } completion:^(BOOL finished) {
         
@@ -198,14 +206,14 @@
     [UIView animateWithDuration:0.3f delay:0 usingSpringWithDamping:0.8f initialSpringVelocity:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
         
         [weak setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5f]];
-        [_buttomView setFrame:CGRectMake(0, kHcdScreenHeight - _actionSheetHeight, kHcdScreenWidth, _actionSheetHeight)];
+        [weak.buttomView setFrame:CGRectMake(0, kHcdScreenHeight - weak.actionSheetHeight, kHcdScreenWidth, weak.actionSheetHeight)];
         
     } completion:^(BOOL finished) {
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:weak action:@selector(dismiss:)];
         tap.delegate = self;
         [weak addGestureRecognizer:tap];
         
-        [_buttomView setFrame:CGRectMake(0, kHcdScreenHeight - _actionSheetHeight, kHcdScreenWidth, _actionSheetHeight)];
+        [weak.buttomView setFrame:CGRectMake(0, kHcdScreenHeight - weak.actionSheetHeight, kHcdScreenWidth, weak.actionSheetHeight)];
     }];
 }
 

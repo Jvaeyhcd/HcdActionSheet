@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "HcdActionSheet"
-  s.version      = "0.0.1"
+  s.version      = "0.0.3"
   s.summary      = "A custom ActionSheet."
 
   # This description is used to generate tags and improve search results.
