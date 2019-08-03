@@ -8,12 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^completeAnimationBlock)(BOOL complete);
-typedef void(^seletedButtonIndexBlock)(NSInteger index);
-
 @interface HcdActionSheet : UIView
 
-@property (nonatomic,strong) seletedButtonIndexBlock selectButtonAtIndex;
+@property (nonatomic, copy) void(^seletedButtonIndex)(NSInteger index);
 
 /**
  *  传入相关参数初始化HcdActionSheet
@@ -35,7 +32,7 @@ typedef void(^seletedButtonIndexBlock)(NSInteger index);
 - (void)changeTitleColor:(UIColor *)color andIndex:(NSInteger )index;
 
 /**
- *  显示出来
+ *  显示ActionSheet
  */
 - (void)showHcdActionSheet;
 

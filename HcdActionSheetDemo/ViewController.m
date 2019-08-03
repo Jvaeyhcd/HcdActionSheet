@@ -35,8 +35,8 @@
 - (void)open {
     HcdActionSheet *sheet = [[HcdActionSheet alloc] initWithCancelStr:@"Cancle"
                                                     otherButtonTitles:@[@"Log Out"]
-                                                          attachTitle:@"Are you sure Log Out?"];
-    sheet.selectButtonAtIndex = ^(NSInteger index) {
+                                                          attachTitle:@"Are you sure Log Out? Log Out the userinfo will be losed!Are you sure Log Out? Log Out the userinfo will be losed!"];
+    sheet.seletedButtonIndex  = ^(NSInteger index) {
         NSLog(@"%ld", (long)index);
     };
     [[UIApplication sharedApplication].keyWindow addSubview:sheet];
