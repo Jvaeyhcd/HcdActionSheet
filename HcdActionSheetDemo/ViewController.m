@@ -28,8 +28,39 @@
     [openBtn addTarget:self action:@selector(open) forControlEvents:UIControlEventTouchUpInside];
     openBtn.layer.cornerRadius = 4;
     openBtn.backgroundColor = [UIColor colorWithRed:0.373 green:0.718 blue:0.980 alpha:1.00];
-    
+    openBtn.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:openBtn];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(openBtn);
+    NSArray *ch = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[openBtn(==100)]"
+                                                          options:0
+                                                          metrics:nil
+                                                            views:views];
+    
+    NSArray *cv = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[openBtn(==40)]"
+                                                          options:0
+                                                          metrics:nil
+                                                            views:views];
+    
+    NSLayoutConstraint *cx = [NSLayoutConstraint constraintWithItem:openBtn
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1
+                                                           constant:0];
+    
+    NSLayoutConstraint *cy = [NSLayoutConstraint constraintWithItem:openBtn
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1
+                                                           constant:0];
+    
+    [self.view addConstraints:@[cx, cy]];
+    [self.view addConstraints:ch];
+    [self.view addConstraints:cv];
 }
 
 - (void)open {

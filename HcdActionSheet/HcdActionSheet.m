@@ -13,7 +13,6 @@
 #define kHcdScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kHcdScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kHcdCellSpacing 7.0f
-#define IS_IPHONEX ([UIScreen mainScreen].bounds.size.height >= 812.0f)
 
 @class HcdActionSheet;
 
@@ -29,6 +28,8 @@
 // 高度
 @property (nonatomic, assign)      CGFloat   actionSheetHeight;
 
+@property (nonatomic, assign)      BOOL      isShow;
+
 @end
 
 @implementation HcdActionSheet
@@ -41,8 +42,43 @@
         _cancelStr = str;
         _titles = titles;
         [self loadUI];
+        if ([self getIsIpad]) {
+            [self registerOrientationObserver];
+        }
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+/// 注册界面旋转发生了变化的监听
+- (void)registerOrientationObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+}
+
+// 如果设备是iPad，界面发生了旋转此方法并不会调用
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    [self updateFrame];
+}
+
+- (void)updateFrame {
+    [self setFrame:CGRectMake(0, 0, kHcdScreenWidth, kHcdScreenHeight)];
+    if (self.isShow) {
+        [self.buttomView setFrame:CGRectMake(0, kHcdScreenHeight - self.actionSheetHeight, self.frame.size.width, self.actionSheetHeight)];
+    } else {
+        self.buttomView.frame = CGRectMake(0, kHcdScreenHeight, self.frame.size.width, self.actionSheetHeight);
+    }
+    CAShapeLayer *maskLayer = (CAShapeLayer *)self.buttomView.layer.mask;
+    maskLayer.frame = self.buttomView.bounds;
+    maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:self.buttomView.bounds
+                                           byRoundingCorners:(UIRectCornerTopLeft | UIRectCornerTopRight)
+                                                 cornerRadii:CGSizeMake(10.0f, 10.0f)].CGPath;
+    self.buttomView.layer.mask = maskLayer;
 }
 
 /**
@@ -60,7 +96,7 @@
     
     buttomView.backgroundColor = [UIColor colorWithRed:0.922 green:0.918 blue:0.937 alpha:1.00];
     
-    _actionSheetHeight = IS_IPHONEX ? _titles.count * (kHcdSheetCellHeight + 0.5f) + 34.0 : _titles.count * (kHcdSheetCellHeight + 0.5f);
+    _actionSheetHeight = [self getIsIphoneX] ? _titles.count * (kHcdSheetCellHeight + 0.5f) + 34.0 : _titles.count * (kHcdSheetCellHeight + 0.5f);
     
     CGFloat attachTitleHeight = 0;
     // 高度累计计算
@@ -78,12 +114,15 @@
     }
     
     [buttomView setFrame:CGRectMake(0, kHcdScreenHeight, kHcdScreenWidth, _actionSheetHeight)];
+    [self addSubview:buttomView];
     _buttomView = buttomView;
-    [self addSubview:_buttomView];
     /*end*/
     
+    NSDictionary *views;
+    NSArray *ch, *cv;
+    
     /*CanceBtn*/
-    CGFloat cancleBtnY = IS_IPHONEX ? CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight - 34.0 : CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight;
+    CGFloat cancleBtnY = [self getIsIphoneX] ? CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight - 34.0 : CGRectGetHeight(buttomView.bounds) - kHcdSheetCellHeight;
     UIButton *cancleBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     [cancleBtn setBackgroundColor:[UIColor whiteColor]];
     [cancleBtn setFrame:CGRectMake(0, cancleBtnY, kHcdScreenWidth, kHcdSheetCellHeight)];
@@ -93,14 +132,40 @@
     [cancleBtn setTag:100];
     if (_cancelStr) {
         [cancleBtn setFrame:CGRectMake(0, cancleBtnY, kHcdScreenWidth, kHcdSheetCellHeight)];
+        cancleBtn.translatesAutoresizingMaskIntoConstraints = NO;
         [_buttomView addSubview:cancleBtn];
+        
+        views = NSDictionaryOfVariableBindings(cancleBtn);
+        ch = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[cancleBtn]|"
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        cv = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[cancleBtn(==%f)]", cancleBtnY, kHcdSheetCellHeight]
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        [_buttomView addConstraints:ch];
+        [_buttomView addConstraints:cv];
     }
     
-    if (IS_IPHONEX) {
+    if ([self getIsIphoneX]) {
         UIView *bView = [[UIView alloc] init];
         bView.frame = CGRectMake(0, cancleBtnY + kHcdSheetCellHeight, kHcdScreenWidth, 34.0);
         bView.backgroundColor = [UIColor whiteColor];
+        bView.translatesAutoresizingMaskIntoConstraints = NO;
         [_buttomView addSubview:bView];
+        
+        views = NSDictionaryOfVariableBindings(bView);
+        ch = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bView]|"
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        cv = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[bView(==34)]", cancleBtnY + kHcdSheetCellHeight]
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        [_buttomView addConstraints:ch];
+        [_buttomView addConstraints:cv];
     }
     
     /*end*/
@@ -130,7 +195,20 @@
         [btn setTitle:title forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:16];
         [btn addTarget:self action:@selector(selectedButtons:) forControlEvents:UIControlEventTouchUpInside];
+        btn.translatesAutoresizingMaskIntoConstraints = NO;
         [_buttomView addSubview:btn];
+        
+        views = NSDictionaryOfVariableBindings(btn);
+        ch = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[btn]|"
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        cv = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[btn(==%f)]", y, kHcdSheetCellHeight]
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        [_buttomView addConstraints:ch];
+        [_buttomView addConstraints:cv];
     }
     /*END*/
     
@@ -143,12 +221,38 @@
         attachTitleView.text = _attachTitle;
         attachTitleView.textAlignment = NSTextAlignmentCenter;
         attachTitleView.numberOfLines = 0;
+        attachTitleView.translatesAutoresizingMaskIntoConstraints = NO;
         
         UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kHcdScreenWidth, attachTitleHeight)];
         titleView.backgroundColor = [UIColor whiteColor];
         [titleView addSubview:attachTitleView];
+        titleView.translatesAutoresizingMaskIntoConstraints = NO;
         
         [_buttomView addSubview:titleView];
+        
+        views = NSDictionaryOfVariableBindings(titleView);
+        ch = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[titleView]|"
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        cv = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[titleView(==%f)]", attachTitleHeight]
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        [_buttomView addConstraints:ch];
+        [_buttomView addConstraints:cv];
+        
+        views = NSDictionaryOfVariableBindings(attachTitleView);
+        ch = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[attachTitleView]-16-|"
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        cv = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[attachTitleView(==%f)]", attachTitleHeight]
+                                                              options:0
+                                                              metrics:nil
+                                                                views:views];
+        [_buttomView addConstraints:ch];
+        [_buttomView addConstraints:cv];
         
     }
     
@@ -196,6 +300,7 @@
 //隐藏ActionSheet的Block
 -(void)dismissBlock:(void(^)(BOOL complete))block{
     
+    self.isShow = NO;
     
     typeof(self) __weak weak = self;
     CGFloat height = ((kHcdSheetCellHeight+0.5f)+kHcdCellSpacing) + (_titles.count * (kHcdSheetCellHeight+0.5f)) + kCollectionViewHeight;
@@ -219,6 +324,7 @@
  */
 - (void)showHcdActionSheet
 {
+    self.isShow = YES;
     typeof(self) __weak weak = self;
     [UIView animateWithDuration:0.3f delay:0 usingSpringWithDamping:0.8f initialSpringVelocity:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
         
@@ -264,6 +370,40 @@
     maskLayer.frame = self.bounds;
     maskLayer.path = maskPath.CGPath;
     view.layer.mask = maskLayer;
+}
+
+- (BOOL)getIsIphoneX {
+
+    NSString *deviceType = [UIDevice currentDevice].model;
+    if([deviceType isEqualToString:@"iPhone"]) {
+        // iPhone
+        return ([UIScreen mainScreen].bounds.size.height >= 812.0f);
+    } else if([deviceType isEqualToString:@"iPod touch"]) {
+        //iPod Touch
+        return NO;
+    } else if([deviceType isEqualToString:@"iPad"]) {
+        //iPad
+        return NO;
+    }
+
+    return NO;
+}
+
+- (BOOL)getIsIpad {
+
+    NSString *deviceType = [UIDevice currentDevice].model;
+    if([deviceType isEqualToString:@"iPhone"]) {
+        // iPhone
+        return NO;
+    } else if([deviceType isEqualToString:@"iPod touch"]) {
+        //iPod Touch
+        return NO;
+    } else if([deviceType isEqualToString:@"iPad"]) {
+        //iPad
+        return YES;
+    }
+
+    return NO;
 }
 
 @end
